@@ -1,0 +1,10 @@
+# Set the default behavior to auto-detect text files
+* text=auto
+
+# Force LF (Linux) line endings for all common code files
+*.sol text eol=lf
+*.js text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
