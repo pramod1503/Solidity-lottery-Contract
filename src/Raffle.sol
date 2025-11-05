@@ -61,7 +61,7 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatible, ReentrancyGuard,
     event EmergencyWithdraw(address indexed to, uint256 amount);
     event RafflePaused();
     event RaffleUnpaused();
-    
+
     // NOTE: We will use the OwnershipTransferred event already built into VRFConsumerBaseV2Plus's parent
 
     /* ========== CONSTRUCTOR ========== */
@@ -72,9 +72,8 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatible, ReentrancyGuard,
         uint32 callbackGasLimit,
         uint256 entranceFee,
         uint256 intervalSeconds
-    )
-        VRFConsumerBaseV2Plus(vrfCoordinator)
-        // FIX: Removed "Ownable(msg.sender)"
+    ) VRFConsumerBaseV2Plus(vrfCoordinator) 
+    // FIX: Removed "Ownable(msg.sender)"
     {
         // Basic input validation
         if (
@@ -133,9 +132,7 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatible, ReentrancyGuard,
             requestConfirmations: REQUEST_CONFIRMATIONS,
             callbackGasLimit: i_callbackGasLimit,
             numWords: NUM_WORDS,
-           extraArgs: VRFV2PlusClient._argsToBytes(
-           VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
-)
+            extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: false}))
         });
 
         uint256 requestId = i_vrfCoordinator.requestRandomWords(request);
@@ -158,7 +155,7 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatible, ReentrancyGuard,
 
         uint256 randomNumber = randomWords[0];
         uint256 playersCount = s_players.length;
-        
+
         if (playersCount == 0) {
             s_raffleState = RaffleState.OPEN;
             return;
@@ -208,7 +205,7 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatible, ReentrancyGuard,
         if (!sent) revert Raffle__WithdrawFailed();
         emit EmergencyWithdraw(to, bal);
     }
-    
+
     // NOTE: The functions transferOwnership(), owner(), etc.
     // are all inherited from VRFConsumerBaseV2Plus and will work.
 
@@ -259,7 +256,7 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatible, ReentrancyGuard,
     }
 
     /* ========== RECEIVE / FALLBACK ========== */
-    
+
     receive() external payable {
         revert("Use enterRaffle()");
     }

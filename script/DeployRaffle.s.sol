@@ -11,7 +11,7 @@ contract DeployRaffle is Script {
     uint96 private constant MOCK_BASE_FEE = 0.25 ether;
     uint96 private constant MOCK_GAS_PRICE_LINK = 1e9; // 1 gwei LINK
     // FIX: Add the 3rd mock parameter (1 ETH = 200 LINK)
-    int256 private constant MOCK_WEI_PER_UNIT_LINK = 5e15; 
+    int256 private constant MOCK_WEI_PER_UNIT_LINK = 5e15;
 
     Raffle public raffle;
     HelperConfig public helperConfig;
@@ -19,7 +19,7 @@ contract DeployRaffle is Script {
     function run() external returns (Raffle, HelperConfig) {
         // 1. Get the configuration for the current network
         helperConfig = new HelperConfig();
-        
+
         // FIX: "Catch" all 6 return values from the getter function
         (
             address vrfCoordinator,
@@ -34,39 +34,29 @@ contract DeployRaffle is Script {
         if (block.chainid == 31337) {
             // We are on Anvil (local)
             vm.startBroadcast();
-            
+
             // FIX: Pass all 3 arguments to the mock constructor
             VRFCoordinatorV2_5Mock vrfCoordinatorMock =
                 new VRFCoordinatorV2_5Mock(MOCK_BASE_FEE, MOCK_GAS_PRICE_LINK, MOCK_WEI_PER_UNIT_LINK);
-            
+
             uint256 subId = vrfCoordinatorMock.createSubscription();
-            vrfCoordinatorMock.fundSubscription(subId, 10 ether); 
+            vrfCoordinatorMock.fundSubscription(subId, 10 ether);
 
             // 2d. Update the config with the mock's real address and new subId
             vrfCoordinator = address(vrfCoordinatorMock);
             subscriptionId = subId;
             vm.stopBroadcast();
-        } 
-        
+        }
+
         // 3. Deploy the Raffle contract using the config
         vm.startBroadcast();
-        raffle = new Raffle(
-            vrfCoordinator,
-            keyHash,
-            subscriptionId,
-            callbackGasLimit,
-            entranceFee,
-            intervalSeconds
-        );
+        raffle = new Raffle(vrfCoordinator, keyHash, subscriptionId, callbackGasLimit, entranceFee, intervalSeconds);
         vm.stopBroadcast();
 
         // 4. If local, add the new raffle contract as a consumer
         if (block.chainid == 31337) {
             vm.startBroadcast();
-            VRFCoordinatorV2_5Mock(vrfCoordinator).addConsumer(
-                subscriptionId,
-                address(raffle)
-            );
+            VRFCoordinatorV2_5Mock(vrfCoordinator).addConsumer(subscriptionId, address(raffle));
             vm.stopBroadcast();
         }
 

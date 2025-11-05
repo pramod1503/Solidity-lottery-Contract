@@ -31,25 +31,15 @@ contract RaffleTest is Test {
     function setUp() public {
         // 1. Get the configuration (this will be ANVIL config by default)
         helperConfig = new HelperConfig();
-        (
-            vrfCoordinatorAddress,
-            keyHash,
-            subscriptionId,
-            callbackGasLimit,
-            entranceFee,
-            intervalSeconds
-        ) = helperConfig.activeNetworkConfig();
+        (vrfCoordinatorAddress, keyHash, subscriptionId, callbackGasLimit, entranceFee, intervalSeconds) =
+            helperConfig.activeNetworkConfig();
 
         // 2. Deploy the mock VRF coordinator
         uint96 mockBaseFee = 0.25 ether;
         uint96 mockGasPriceLink = 1e9;
         int256 mockWeiPerUnitLink = 5e15;
-        vrfCoordinatorMock = new VRFCoordinatorV2_5Mock(
-            mockBaseFee,
-            mockGasPriceLink,
-            mockWeiPerUnitLink
-        );
-        
+        vrfCoordinatorMock = new VRFCoordinatorV2_5Mock(mockBaseFee, mockGasPriceLink, mockWeiPerUnitLink);
+
         // 3. Update our config with the real mock address
         vrfCoordinatorAddress = address(vrfCoordinatorMock);
 
@@ -58,14 +48,8 @@ contract RaffleTest is Test {
         vrfCoordinatorMock.fundSubscription(subscriptionId, 10 ether); // Fund with 10 mock LINK
 
         // 5. Deploy the Raffle contract
-        raffle = new Raffle(
-            vrfCoordinatorAddress,
-            keyHash,
-            subscriptionId,
-            callbackGasLimit,
-            entranceFee,
-            intervalSeconds
-        );
+        raffle =
+            new Raffle(vrfCoordinatorAddress, keyHash, subscriptionId, callbackGasLimit, entranceFee, intervalSeconds);
 
         // 6. Add the Raffle contract as a consumer on the mock
         vrfCoordinatorMock.addConsumer(subscriptionId, address(raffle));
@@ -87,10 +71,10 @@ contract RaffleTest is Test {
 
     function test_EnterRaffleFails_WhenNotEnoughEth() public {
         vm.prank(PLAYER); // The next transaction will be from PLAYER
-        
+
         // We expect the contract to revert with our custom error
         vm.expectRevert(Raffle.Raffle__NotEnoughETHToEnter.selector);
-        
+
         // Send 1 wei less than the entrance fee
         raffle.enterRaffle{value: entranceFee - 1 wei}();
     }
@@ -112,17 +96,17 @@ contract RaffleTest is Test {
         vm.warp(block.timestamp + intervalSeconds + 1);
 
         // 3. Check upkeep
-        (bool upkeepNeeded, ) = raffle.checkUpkeep("");
+        (bool upkeepNeeded,) = raffle.checkUpkeep("");
         assertEq(upkeepNeeded, true);
     }
-    
+
     function test_PerformUpkeepFails_WhenCheckUpkeepIsFalse() public {
         // We expect the contract to revert with our custom error
         vm.expectRevert(abi.encodeWithSelector(Raffle.Raffle__UpkeepNotNeeded.selector, 0, 0, 0));
         raffle.performUpkeep("");
     }
 
-   /*
+    /*
      * This is the most important test!
      * It tests the entire lifecycle of the lottery in one go.
      */
@@ -132,7 +116,7 @@ contract RaffleTest is Test {
         raffle.enterRaffle{value: entranceFee}();
         vm.prank(PLAYER_2);
         raffle.enterRaffle{value: entranceFee}();
-        
+
         address PLAYER_3 = address(3);
         vm.deal(PLAYER_3, STARTING_USER_BALANCE);
         vm.prank(PLAYER_3);

@@ -33,7 +33,7 @@ contract HelperConfig is Script {
             // 150 gwei KeyHash (150,000,000,000)
             keyHash: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
             // Your Sepolia subscription ID (replace this)
-            subscriptionId: 96044357289078877141748840037071824057617118572030550441307414427372018905762, 
+            subscriptionId: 96044357289078877141748840037071824057617118572030550441307414427372018905762,
             callbackGasLimit: 500000, // 500,000 gas
             entranceFee: 0.01 ether,
             intervalSeconds: 30
