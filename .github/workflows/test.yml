@@ -1,41 +1,43 @@
 name: CI
 
 on:
-  push:
-  pull_request:
-  workflow_dispatch:
+  push:
+  pull_request:
+  workflow_dispatch:
 
 env:
-  FOUNDRY_PROFILE: ci
+  FOUNDRY_PROFILE: ci
 
 jobs:
-  check:
-    name: Foundry project
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+  check:
+    name: Foundry project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
 
-            - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      # --- THIS IS THE FIX ---
+      # These steps must be at the same indentation level as "Install Foundry"
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-      - name: Install NPM Dependencies
-        run: |
-          npm install
-      
+      - name: Install NPM Dependencies
+        run: |
+          npm install
+      # --- END OF FIX ---
 
-      - name: Run Forge build
-        run: |
-          forge build --sizes
-        id: build
+      - name: Run Forge build
+        run: |
+          forge build --sizes
+        id: build
 
-      - name: Run Forge tests
-        run: |
-          forge test -vvv
-        id: test
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
+        id: test
