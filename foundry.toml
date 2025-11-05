@@ -1,0 +1,15 @@
+[profile.default]
+solc_version = "0.8.20"
+src = "src"
+out = "out"
+libs = ["lib"]
+
+remappings = [
+
+    "@chainlink/contracts/=node_modules/@chainlink/contracts/",
+    "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
+    "forge-std/=lib/forge-std/src/",
+
+    "@openzeppelin/contracts@4.9.6/=node_modules/@openzeppelin/contracts/"
+]
+
