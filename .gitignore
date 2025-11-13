@@ -1,31 +1,67 @@
-# Compiler files
-cache/
-out/
-
-# Ignores development broadcast logs
-!/broadcast
-/broadcast/*/31337/
-/broadcast/**/dry-run/
-
-# Docs
-docs/
-
-# Dotenv file
-.env
+# ===============================
+# Node.js / Hardhat Dependencies
+# ===============================
 node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Foundry dependencies
-lib/
+# ===============================
+# Build Artifacts
+# ===============================
+artifacts/
+cache/
+typechain/
+typechain-types/
+coverage/
+coverage.json
 
-# Foundry build artifacts
+# ===============================
+# Foundry (Forge) Artifacts
+# ===============================
 out/
-cache_forge/
+lib/
+cache/
+broadcast/
 
-# Generated files
-Raffle.flat.sol
+# ===============================
+# Environment / Secrets
+# ===============================
+.env
+.env.local
+.env.*.local
 
-# VSCode settings
-.vscode/
-
-# Operating System files
+# ===============================
+# OS & Editor Files
+# ===============================
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.log
+
+# ===============================
+# Testing / Reports
+# ===============================
+gas-report.txt
+gas-report.json
+test-results.xml
+*.tsbuildinfo
+
+# ===============================
+# Misc
+# ===============================
+*.tmp
+*.pid
+*.seed
+*.bak
+
+# ===============================
+# Ignore compiled frontend if using fullstack
+# ===============================
+frontend/node_modules/
+frontend/.next/
+frontend/build/
+frontend/dist/
